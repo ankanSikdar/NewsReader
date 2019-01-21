@@ -1,9 +1,12 @@
 package com.ankan.android.newsreader;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -37,8 +40,15 @@ public class MainActivity extends AppCompatActivity {
 
         IdDownloadTask downloadTask = new IdDownloadTask();
         downloadTask.execute("https://hacker-news.firebaseio.com/v0/topstories.json");
-        Log.i("id size", Integer.toString(idArrayList.size()));
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+                intent.putExtra("id", position);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -73,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             try {
-                Log.i("Result", s);
                 JSONArray jsonArray = new JSONArray(s);
                 for(int i = 0; i < 5; i++) {
                     idArrayList.add(jsonArray.get(i).toString());
@@ -126,8 +135,6 @@ public class MainActivity extends AppCompatActivity {
                 titleArrayList.add(title);
                 urlArrayList.add(url);
                 arrayAdapter.notifyDataSetChanged();
-                Log.i("Title array list", titleArrayList.get(1));
-                Log.i("URL arrayList", urlArrayList.get(1));
             } catch (Exception e) {
                 e.printStackTrace();
             }
