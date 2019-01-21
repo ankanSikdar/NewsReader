@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         idArrayList = new ArrayList<>();
         titleArrayList = new ArrayList<>();
         urlArrayList = new ArrayList<>();
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, idArrayList);
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, titleArrayList);
 
         IdDownloadTask downloadTask = new IdDownloadTask();
         downloadTask.execute("https://hacker-news.firebaseio.com/v0/topstories.json");
@@ -75,11 +75,14 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Log.i("Result", s);
                 JSONArray jsonArray = new JSONArray(s);
-                for(int i = 0; i < jsonArray.length(); i++) {
+                for(int i = 0; i < 5; i++) {
                     idArrayList.add(jsonArray.get(i).toString());
-                    arrayAdapter.notifyDataSetChanged();
                 }
                 listView.setAdapter(arrayAdapter);
+                for (int i = 0; i < idArrayList.size(); i++) {
+                    NewsDownloadTask newsDownloadTask = new NewsDownloadTask();
+                    newsDownloadTask.execute(idArrayList.get(i));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -95,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
             String result = "";
 
             try {
-                Log.i("Title", "Executing");
                 url = new URL("https://hacker-news.firebaseio.com/v0/item/" + urls[0] + ".json");
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = httpURLConnection.getInputStream();
@@ -120,7 +122,12 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 String title = jsonObject.getString("title");
+                String url = jsonObject.getString("url");
                 titleArrayList.add(title);
+                urlArrayList.add(url);
+                arrayAdapter.notifyDataSetChanged();
+                Log.i("Title array list", titleArrayList.get(1));
+                Log.i("URL arrayList", urlArrayList.get(1));
             } catch (Exception e) {
                 e.printStackTrace();
             }
