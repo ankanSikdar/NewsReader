@@ -1,6 +1,7 @@
 package com.ankan.android.newsreader;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         listView = findViewById(R.id.listView);
         idArrayList = new ArrayList<>();
@@ -84,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(s);
             try {
                 JSONArray jsonArray = new JSONArray(s);
-                for(int i = 0; i < 5; i++) {
+                int numOfNews = 20; // no. of news ids to get
+                for(int i = 0; i < numOfNews; i++) {
                     idArrayList.add(jsonArray.get(i).toString());
                 }
                 listView.setAdapter(arrayAdapter);
